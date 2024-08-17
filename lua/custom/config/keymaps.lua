@@ -1,3 +1,4 @@
 return {
-  vim.keymap.set('i', 'jj', '<ESC>', { silent = true })  
+  vim.keymap.set('i', 'jj', '<ESC>', { silent = true }),
+  vim.keymap.set('i', 'kk', '<ESC>:w<RETURN>', { silent = true }),
 }

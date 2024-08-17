@@ -942,9 +942,21 @@ vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = '[F]ind in [B]uffers
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = '[F]ind in [H]elp tags' })
 vim.keymap.set('n', '<leader>fc', builtin.current_buffer_fuzzy_find, { desc = '[F]ind in [C]urrent buffer' })
 
+-- TJ split resize
+
+vim.keymap.set('n', '<M-,>', '<c-w>5<')
+vim.keymap.set('n', '<M-.>', '<c-w>5>')
+vim.keymap.set('n', '<M-t>', '<c-w>5+')
+vim.keymap.set('n', '<M-s>', '<c-w>5-')
+
 for _, ft_path in ipairs(vim.api.nvim_get_runtime_file('lua/custom/snippets/*.lua', true)) do
   loadfile(ft_path)()
 end
+
+vim.o.tabstop = 4 -- A TAB character looks like 4 spaces
+vim.o.expandtab = true -- Pressing the TAB key will insert spaces instead of a TAB character
+vim.o.softtabstop = 4 -- Number of spaces inserted instead of a TAB character
+vim.o.shiftwidth = 4 -- Number of spaces inserted when indenting
 
 --- end ::CUSTOM::
 -------------------------------------------------------------------
