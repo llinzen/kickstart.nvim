@@ -169,7 +169,8 @@ vim.opt.spelllang = { 'en_us', 'de' }
 vim.opt.spell = true
 
 -- keymaps
-require 'custom.config.keymaps'
+require 'custom.config.keymaps.keymaps'
+require 'custom.config.keymaps.tabs'
 
 -- end ::CUSTOM::
 --------------------------------------------------------------------
