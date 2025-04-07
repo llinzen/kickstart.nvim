@@ -6,8 +6,58 @@ return {
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       { 'j-hui/fidget.nvim', opts = {} },
-      { 'folke/neodev.nvim', opts = {} },
-      { 'saghen/blink.cmp' },
+      -- { 'folke/neodev.nvim', opts = {} },
+      -- { 'saghen/blink.cmp' },
+      {
+        'folke/lazydev.nvim',
+        ft = 'lua', -- only load on lua files
+        opts = {
+          library = {
+            -- See the configuration section for more details
+            -- Load luvit types when the `vim.uv` word is found
+            { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+          },
+        },
+      },
+      -- { -- optional cmp completion source for require statements and module annotations
+      --   'hrsh7th/nvim-cmp',
+      --   opts = function(_, opts)
+      --     opts.sources = opts.sources or {}
+      --     table.insert(opts.sources, {
+      --       name = 'lazydev',
+      --       group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+      --     })
+      --   end,
+      -- },
+      { -- optional blink completion source for require statements and module annotations
+        'saghen/blink.cmp',
+        dependencies = 'rafamadriz/friendly-snippets',
+
+        version = 'v0.*',
+
+        opts = {
+          keymap = { preset = 'default' },
+
+          appearance = {
+            use_nvim_cmp_as_default = true,
+            nerd_font_variant = 'mono',
+          },
+          signature = { enabled = true },
+          sources = {
+            -- add lazydev to your completion providers
+            default = { 'lazydev', 'lsp', 'path', 'snippets', 'buffer' },
+            providers = {
+              lazydev = {
+                name = 'LazyDev',
+                module = 'lazydev.integrations.blink',
+                -- make lazydev completions top priority (see `:h blink.cmp`)
+                score_offset = 100,
+              },
+            },
+          },
+        },
+        opts_extend = { 'sources.default' },
+      },
     },
     config = function()
       vim.api.nvim_create_autocmd('LspAttach', {
@@ -17,12 +67,6 @@ return {
             vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
-          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
           map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
           map('K', vim.lsp.buf.hover, 'Hover Documentation')

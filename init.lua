@@ -3,9 +3,9 @@ vim.g.maplocalleader = ' '
 
 vim.g.have_nerd_font = true
 
+picker = 'fzf'
+
 require 'config.opts'
-require 'keymaps.keymaps'
-require 'keymaps.tabs'
 
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
@@ -16,6 +16,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 require 'config.lazy'
+
+require 'keymaps.keymaps'
+require 'keymaps.tabs'
+
+
+require 'keymaps.picker'
 
 vim.o.background = 'dark' -- or "light" for light mode
 vim.cmd [[colorscheme gruvbox]]

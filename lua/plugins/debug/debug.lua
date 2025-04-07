@@ -7,13 +7,10 @@
 -- kickstart.nvim and not kitchen-sink.nvim ;)
 
 return {
-  -- NOTE: Yes, you can install new plugins here!
   'mfussenegger/nvim-dap',
-  -- NOTE: And you can specify dependencies as well
   dependencies = {
     -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
-
     -- Required dependency for nvim-dap-ui
     'nvim-neotest/nvim-nio',
 
@@ -42,6 +39,7 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
+        'pyright',
       },
     }
 
@@ -58,11 +56,10 @@ return {
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
     dapui.setup {
-      -- Set icons to characters that are more likely to work in every terminal.
-      --    Feel free to remove or use ones that you like more! :)
-      --    Don't feel like these are good choices.
       icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
       controls = {
+        element = 'repl',
+        enabled = true,
         icons = {
           pause = '⏸',
           play = '▶',
@@ -76,6 +73,8 @@ return {
         },
       },
     }
+
+    -- vim.api.nvim_create_autocmd('DapUiUStart', opts)
 
     -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
     vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: See last session result.' })
