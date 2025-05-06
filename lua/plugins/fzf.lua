@@ -1,3 +1,4 @@
+--picker
 return {
   {
     'ibhagwan/fzf-lua',

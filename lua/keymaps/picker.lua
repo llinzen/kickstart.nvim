@@ -64,4 +64,5 @@ elseif picker == 'fzf' then
   vim.keymap.set('n', '<leader>fb', require('fzf-lua').buffers, { desc = '[F]ind in [B]uffers' })
   vim.keymap.set('n', '<leader>fh', require('fzf-lua').helptags, { desc = '[F]ind in [H]elp tags' })
   vim.keymap.set('n', '<leader>fc', require('fzf-lua').lgrep_curbuf, { desc = '[F]ind in [C]urrent buffer' })
+elseif picker == 'snacks' then
 end
