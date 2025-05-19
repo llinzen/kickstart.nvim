@@ -16,12 +16,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 require 'config.lazy'
-
-require 'keymaps.keymaps'
-require 'keymaps.tabs'
-
-
-require 'keymaps.picker'
+require 'config.spellings'
+require 'keymaps.init'
 
 vim.o.background = 'dark' -- or "light" for light mode
 vim.cmd [[colorscheme gruvbox]]

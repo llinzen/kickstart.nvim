@@ -6,11 +6,11 @@ vim.keymap.set('n', '++', '<C-a>', { silent = true })
 vim.keymap.set('n', '<leader>q', ':bq<bar>sp<bar>bn<bar>bd<CR>', { silent = true, desc = 'Close buffer w/o changing splits' })
 
 -- TJ split resize
-vim.keymap.set('n', '<M-,>', '<c-w>5<')
-vim.keymap.set('n', '<M-.>', '<c-w>5>')
-vim.keymap.set('n', '<M-t>', '<c-w>5+')
-vim.keymap.set('n', '<M-s>', '<c-w>5-')
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+vim.keymap.set('n', '<M-.>', '<c-w>5>', { desc = 'Increase split widt' })
+vim.keymap.set('n', '<M-,>', '<c-w>5<', { desc = 'Decrease split widt' })
+vim.keymap.set('n', '<M-t>', '<c-w>5+', { desc = 'Increase split height' })
+vim.keymap.set('n', '<M-s>', '<c-w>5-', { desc = 'Decrease split height' })
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear search hightlighting' })
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
