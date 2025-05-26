@@ -20,5 +20,9 @@ require('lazy').setup {
     { import = 'plugins.practice' },
   },
   install = { colorscheme = { 'gruvbox' } },
-  checker = { enabled = true },
+  checker = {
+    enabled = true,
+    notify = true,
+    frequency = 86400, --only once per day
+  },
 }
