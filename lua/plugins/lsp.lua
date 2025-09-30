@@ -134,39 +134,56 @@ return {
 
       -- setup blink for every lsp
       local capabilities = require('blink.cmp').get_lsp_capabilities()
-      local lspconfig = require 'lspconfig'
+      local lsp_legacy = false
+      if (lsp_legacy == true) then
+        local lspconfig = require 'lspconfig'
 
-      lspconfig['lua_ls'].setup { capabilities = capabilities }
+        lspconfig['lua_ls'].setup { capabilities = capabilities }
 
-      local servers = {
-        clangd = {},
-        -- gopls = {},
-        pyright = {},
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
-        --
+        local servers = {
+          clangd = {},
+          -- gopls = {},
+          pyright = {},
+          -- rust_analyzer = {},
+          -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
+          --
+          -- Some languages (like typescript) have entire language plugins that can be useful:
+          --    https://github.com/pmizio/typescript-tools.nvim
+          --
+          -- But for many setups, the LSP (`tsserver`) will work just fine
+          -- tsserver = {},
+          --
 
-        lua_ls = {
-          -- cmd = {...},
-          -- filetypes = { ...},
-          -- capabilities = {},
-          settings = {
-            Lua = {
-              completion = {
-                callSnippet = 'Replace',
+          lua_ls = {
+            -- cmd = {...},
+            -- filetypes = { ...},
+            -- capabilities = {},
+            settings = {
+              Lua = {
+                completion = {
+                  callSnippet = 'Replace',
+                },
+                -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+                -- diagnostics = { disable = { 'missing-fields' } },
               },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
             },
           },
-        },
-      }
+        }
+      else
+        local lsps = {
+          { 'lua_ls' },
+          { 'pyright' },
+          { 'clangd' },
+        }
+
+        for _, lsp in pairs(lsps) do
+          local name, config = lsp[1], lsp [2]
+          vim.lsp.enable(name)
+          if config then 
+          vim.lsp.config(name, config)
+          end
+        end
+      end
 
       -- Ensure the servers and tools above are installed
       --  To check the current status of installed tools and/or manually install
