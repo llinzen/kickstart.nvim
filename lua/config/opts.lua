@@ -37,8 +37,12 @@ vim.opt.termguicolors = true
 -- blinking block cursor in insert mode
 vim.o.guicursor = 'n-v-c-sm-i-ci-ve:block,r-cr-o:hor20,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor'
 
-vim.opt.spelllang = { 'en_us', 'de' }
+vim.opt.spelllang = { 'en_us', 'de_de' }
+-- vim.opt.spelllang = { 'en', 'de' }
+-- vim.opt.spelllang = 'de'
 vim.opt.spell = true
+
+-- vim.opt.encoding = 'utf-8'
 
 vim.opt.hlsearch = true
 
