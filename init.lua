@@ -17,6 +17,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 require 'config.lazy'
 require 'config.spellings'
+require 'config.filetypes'
 require 'keymaps.init'
 
 vim.o.background = 'dark' -- or "light" for light mode

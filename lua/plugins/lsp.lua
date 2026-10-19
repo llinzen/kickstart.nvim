@@ -174,14 +174,31 @@ return {
           { 'lua_ls' },
           { 'pyright' },
           { 'clangd' },
+          {
+            'texlab',
+            settings = {
+              texlab = {
+                build = {
+                  executable = 'latexmk',
+                  args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f' },
+                  onSave = true, -- :VimtexCompile equivalent
+                  forwardSearchAfter = true,
+                },
+                forwardSearch = {
+                  executable = 'okular',
+                  args = { '--unique', 'file:%p#src:%l%f' },
+                },
+              },
+            },
+          },
         }
 
         for _, lsp in pairs(lsps) do
           local name, config = lsp[1], lsp[2]
-          vim.lsp.enable(name)
           if config then
             vim.lsp.config(name, config)
           end
+          vim.lsp.enable(name)
         end
       end
 
@@ -206,12 +223,15 @@ return {
         'cmakelang',
         'cmake-language-server',
         'delve',
+        'ansible-lint',
+        'ansible-language-server',
         -- 'ltex-ls',
         'lua-language-server',
         'markdownlint',
         'pyright',
         'stylua', -- Used to format Lua code
         'texlab',
+        'latexindent',
         'yamlfix',
         'yamllint',
         'yaml-language-server',
