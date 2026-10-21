@@ -1,4 +1,3 @@
-sudo dnf install lua-5.1 fzf ripgrepsudo dnf install lua-5.1 fzf ripgrep  
-pip3 install neovim jupyter-client cairosvg pnglatex plotly kaleido pyperclip nbformat
-cpan n Neovim:Ext
-sudo npm install -g neovim
+#!/bin/sh
+# external tools this config needs (lazy.nvim, Mason, treesitter builds, fzf-lua pickers)
+sudo dnf install -y git make unzip gcc ripgrep fd-find fzf

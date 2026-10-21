@@ -1,136 +1,103 @@
+-- Treesitter on nvim-treesitter's `main` branch (the old `master` branch only supports Neovim <= 0.11):
+-- nvim-treesitter only installs parsers and queries; highlighting is Neovim's own vim.treesitter.start().
+-- Needs the tree-sitter CLI >= 0.26.1 (Fedora: tree-sitter-cli).
+
+local ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'vim', 'vimdoc', 'latex', 'bibtex' }
+
+-- filetypes without treesitter highlighting (vim syntax instead); their parsers are still used, e.g. by LuaSnip
+local no_highlight = { latex = true, tex = true, csv = true }
+-- filetypes that additionally keep vim's regex highlighting and indentation
+local vim_regex = { ruby = true }
+
 return {
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
+    lazy = false, -- does not support lazy-loading
     build = ':TSUpdate',
-    opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc', 'latex', 'bibtex' },
-      -- Autoinstall languages that are not installed
-      auto_install = true,
-      highlight = {
-        enable = true,
-        disable = { 'latex', 'tex', 'csv' },
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = { enable = true, disable = { 'ruby' } },
-    },
-    config = function(_, opts)
-      -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+    config = function()
+      require('nvim-treesitter').install(ensure_installed)
 
-      -- Prefer git instead of curl in order to improve connectivity in some environments
-      require('nvim-treesitter.install').prefer_git = true
-      ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup(opts)
+      local function start(buf, lang, ft)
+        if not pcall(vim.treesitter.start, buf, lang) then
+          return
+        end
+        if vim_regex[ft] then
+          vim.bo[buf].syntax = ft
+        else
+          vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end
 
-      -- There are additional nvim-treesitter modules that you can use to interact
-      -- with nvim-treesitter. You should go explore a few and see what interests you:
-      --
-      --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-      --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-      --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('treesitter-start', { clear = true }),
+        callback = function(args)
+          local ft = args.match
+          local lang = vim.treesitter.language.get_lang(ft)
+          if not lang or no_highlight[ft] then
+            return
+          end
+          if vim.treesitter.language.add(lang) then
+            start(args.buf, lang, ft)
+          elseif vim.list_contains(require('nvim-treesitter').get_available(), lang) then
+            -- auto-install a missing parser, then start highlighting in this buffer
+            require('nvim-treesitter').install(lang):await(function(err)
+              if not err then
+                vim.schedule(function()
+                  if vim.api.nvim_buf_is_valid(args.buf) then
+                    start(args.buf, lang, ft)
+                  end
+                end)
+              end
+            end)
+          end
+        end,
+      })
     end,
   },
   {
     'nvim-treesitter/nvim-treesitter-context',
-    config = function()
-      require('treesitter-context').setup {
-        enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
-        max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-        min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
-        line_numbers = true,
-        multiline_threshold = 20, -- Maximum number of lines to show for a single context
-        trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
-        mode = 'cursor', -- Line used to calculate context. Choices: 'cursor', 'topline'
-        -- Separator between context and content. Should be a single character string, like '-'.
-        -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
-        separator = nil,
-        zindex = 20, -- The Z-index of the context window
-        on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
-      }
-    end,
-  },
-  {
-    'nvim-treesitter/nvim-treesitter-refactor',
-    config = function()
-      require('nvim-treesitter.configs').setup {
-        refactor = {
-          navigation = {
-            enable = true,
-            -- Assign keymaps to false to disable them, e.g. `goto_definition = false`.
-            keymaps = {
-              goto_definition = 'gnd',
-              list_definitions = 'gnD',
-              list_definitions_toc = 'gO',
-              goto_next_usage = '<a-*>',
-              goto_previous_usage = '<a-#>',
-            },
-          },
-          smart_rename = {
-            enable = true,
-            -- Assign keymaps to false to disable them, e.g. `smart_rename = false`.
-            keymaps = {
-              smart_rename = 'grr',
-            },
-          },
-          highlight_current_scope = { enable = false },
-          highlight_definitions = {
-            enable = true,
-            -- Set to false if you have an `updatetime` of ~100.
-            clear_on_cursor_move = true,
-          },
-        },
-      }
-    end,
+    event = { 'BufReadPost', 'BufNewFile' },
+    opts = {
+      enable = true,
+      max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+      min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+      line_numbers = true,
+      multiline_threshold = 20, -- Maximum number of lines to show for a single context
+      trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+      mode = 'cursor', -- Line used to calculate context. Choices: 'cursor', 'topline'
+      zindex = 20, -- The Z-index of the context window
+    },
   },
   {
     'nvim-treesitter/nvim-treesitter-textobjects',
+    branch = 'main',
+    event = { 'BufReadPost', 'BufNewFile' },
     config = function()
-      require('nvim-treesitter.configs').setup {
-        textobjects = {
-          select = {
-            enable = true,
-
-            -- Automatically jump forward to textobj, similar to targets.vim
-            lookahead = true,
-
-            keymaps = {
-              -- You can use the capture groups defined in textobjects.scm
-              ['af'] = '@function.outer',
-              ['if'] = '@function.inner',
-              ['ac'] = '@class.outer',
-              -- You can optionally set descriptions to the mappings (used in the desc parameter of
-              -- nvim_buf_set_keymap) which plugins like which-key display
-              ['ic'] = { query = '@class.inner', desc = 'Select inner part of a class region' },
-              -- You can also use captures from other query groups like `locals.scm`
-              ['as'] = { query = '@scope', query_group = 'locals', desc = 'Select language scope' },
-            },
-            -- You can choose the select mode (default is charwise 'v')
-            --
-            -- Can also be a function which gets passed a table with the keys
-            -- * query_string: eg '@function.inner'
-            -- * method: eg 'v' or 'o'
-            -- and should return the mode ('v', 'V', or '<c-v>') or a table
-            -- mapping query_strings to modes.
-            selection_modes = {
-              ['@parameter.outer'] = 'v', -- charwise
-              ['@function.outer'] = 'V', -- linewise
-              ['@class.outer'] = '<c-v>', -- blockwise
-            },
-            -- If you set this to `true` (default is `false`) then any textobject is
-            -- extended to include preceding or succeeding whitespace. Succeeding
-            -- whitespace has priority in order to act similarly to eg the built-in
-            -- `ap`.
-            --
-            -- Can also be a function which gets passed a table with the keys
-            -- * query_string: eg '@function.inner'
-            -- * selection_mode: eg 'v'
-            -- and should return true or false
-            include_surrounding_whitespace = true,
+      require('nvim-treesitter-textobjects').setup {
+        select = {
+          -- Automatically jump forward to textobj, similar to targets.vim
+          lookahead = true,
+          selection_modes = {
+            ['@parameter.outer'] = 'v', -- charwise
+            ['@function.outer'] = 'V', -- linewise
+            ['@class.outer'] = '<c-v>', -- blockwise
           },
+          -- extend text objects by the surrounding whitespace (like the built-in `ap`)
+          include_surrounding_whitespace = true,
         },
       }
+
+      local function select(lhs, query, group, desc)
+        vim.keymap.set({ 'x', 'o' }, lhs, function()
+          require('nvim-treesitter-textobjects.select').select_textobject(query, group or 'textobjects')
+        end, { desc = desc })
+      end
+      select('af', '@function.outer', nil, 'Select around function')
+      select('if', '@function.inner', nil, 'Select inside function')
+      select('ac', '@class.outer', nil, 'Select around class')
+      select('ic', '@class.inner', nil, 'Select inner part of a class region')
+      select('as', '@local.scope', 'locals', 'Select language scope')
     end,
   },
 }

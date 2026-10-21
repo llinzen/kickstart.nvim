@@ -1,9 +1,8 @@
-vim.keymap.set('i', 'jj', '<ESC>', { silent = true })
-vim.keymap.set('i', 'kk', '<ESC>:w<RETURN>', { silent = true })
+-- jj -> <Esc> in insert mode: better-escape.nvim (lua/plugins/better-escape.lua)
 
 -- vim.keymap.set('i', 'll', '<ESC>:wq<RETURN>', { silent = true })
 vim.keymap.set('n', '++', '<C-a>', { silent = true })
-vim.keymap.set('n', '<leader>q', ':bq<bar>sp<bar>bn<bar>bd<CR>', { silent = true, desc = 'Close buffer w/o changing splits' })
+-- <leader>q (close buffer w/o changing splits): mini.bufremove in lua/plugins/mini.lua
 
 -- TJ split resize
 vim.keymap.set('n', '<M-.>', '<c-w>5>', { desc = 'Increase split widt' })
@@ -16,7 +15,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clear search hight
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
-vim.keymap.set('n', '<leader>qf', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>sq', vim.diagnostic.setloclist, { desc = '[S]earch diagnostics in [Q]uickfix/location list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -37,8 +36,8 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
-vim.keymap.set({ 'n', 'x' }, '<A-j>', '<Cmd>MultipleCursorsAddDown<CR>', { desc = 'Add cursor and move down' })
-vim.keymap.set({ 'n', 'x' }, '<A-k>', '<Cmd>MultipleCursorsAddUp<CR>', { desc = 'Add cursor and move up' })
+vim.keymap.set({ 'n', 'x' }, '<A-J>', '<Cmd>MultipleCursorsAddDown<CR>', { desc = 'Add cursor and move down' })
+vim.keymap.set({ 'n', 'x' }, '<A-K>', '<Cmd>MultipleCursorsAddUp<CR>', { desc = 'Add cursor and move up' })
 vim.keymap.set({ 'n', 'i', 'x' }, '<A-Up>', '<Cmd>MultipleCursorsAddUp<CR>', { desc = 'Add cursor and move up' })
 vim.keymap.set({ 'n', 'i', 'x' }, '<A-Down>', '<Cmd>MultipleCursorsAddDown<CR>', { desc = 'Add cursor and move down' })
 vim.keymap.set({ 'n', 'i' }, '<C-LeftMouse>', '<Cmd>MultipleCursorsMouseAddDelete<CR>', { desc = 'Add or remove cursor' })
@@ -51,40 +50,4 @@ vim.keymap.set({ 'n', 'x' }, '<Leader>cl', '<Cmd>MultipleCursorsLock<CR>', { des
 vim.keymap.set('n', '<leader>nc', ":lua require('neoclip.fzf')()<CR>", { desc = 'Browse [N]eo[C]lip with fzf' })
 vim.keymap.set('n', '<leader>nC', ":lua require('neoclip.fzf')('')", { desc = 'Browse [N]eo[C]lip with fzf and choose a register' })
 
-local harpoon = require 'harpoon'
-
--- REQUIRED
-harpoon:setup()
--- REQUIRED
-
-vim.keymap.set('n', '<leader>a', function()
-  harpoon:list():add()
-end)
-vim.keymap.set('n', '<C-e>', function()
-  harpoon.ui:toggle_quick_menu(harpoon:list())
-end)
-
-vim.keymap.set('n', '<C-h>', function()
-  harpoon:list():select(1)
-end)
-vim.keymap.set('n', '<C-t>', function()
-  harpoon:list():select(2)
-end)
-vim.keymap.set('n', '<C-n>', function()
-  harpoon:list():select(3)
-end)
-vim.keymap.set('n', '<C-s>', function()
-  harpoon:list():select(4)
-end)
-
--- Toggle previous & next buffers stored within Harpoon list
-vim.keymap.set('n', '<C-S-P>', function()
-  harpoon:list():prev()
-end)
-vim.keymap.set('n', '<C-S-N>', function()
-  harpoon:list():next()
-end)
-
-vim.keymap.set('n', '<C-e>', function()
-  pick_harpoon(harpoon:list())
-end, { desc = 'Open harpoon window' })
+-- harpoon keymaps live in lua/plugins/harpoon.lua

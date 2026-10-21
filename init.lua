@@ -3,7 +3,7 @@ vim.g.maplocalleader = ' '
 
 vim.g.have_nerd_font = true
 
-picker = 'fzf'
+vim.g.picker = 'fzf' -- or 'telescope' (see lua/keymaps/picker.lua)
 
 require 'config.opts'
 

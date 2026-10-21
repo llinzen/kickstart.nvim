@@ -1,99 +1,85 @@
-if picker == 'telescope' then
-  vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
-  vim.keymap.set('n', '<leader>sk', require('telescope.builtin').keymaps, { desc = '[S]earch [K]eymaps' })
-  vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-  vim.keymap.set('n', '<leader>ss', require('telescope.builtin').builtin, { desc = '[S]earch [S]elect Telescope' })
-  vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
-  vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
-  vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
-  vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
-  vim.keymap.set('n', '<leader>s.', require('telescope.builtin').oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-  vim.keymap.set('n', '<leader>sb', require('telescope.builtin').buffers, { desc = '[F]ind existing [B]uffers' })
-  vim.keymap.set('n', '<leader><leader>', require('telescope.builtin').find_files, { desc = '[ ] Find files' })
+-- search/goto keymaps for the picker selected in init.lua (vim.g.picker = 'fzf' | 'telescope')
+-- the picker module is only required when a key is pressed (keeps startup lazy)
 
-  vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, { desc = '[F]ind [F]iles' })
-  vim.keymap.set('n', '<leader>fg', require('telescope.builtin').live_grep, { desc = '[F]ind with live [G]rep' })
-  vim.keymap.set('n', '<leader>fb', require('telescope.builtin').buffers, { desc = '[F]ind in [B]uffers' })
-  vim.keymap.set('n', '<leader>fh', require('telescope.builtin').help_tags, { desc = '[F]ind in [H]elp tags' })
-  vim.keymap.set('n', '<leader>fc', require('telescope.builtin').current_buffer_fuzzy_find, { desc = '[F]ind in [C]urrent buffer' })
+local pickers = {
+  fzf = {
+    module = 'fzf-lua',
+    help = 'helptags',
+    keymaps = 'keymaps',
+    files = 'files',
+    builtin = 'builtin',
+    grep_word = 'grep_cword',
+    live_grep = 'live_grep',
+    diagnostics = 'diagnostics_workspace',
+    resume = 'resume',
+    oldfiles = 'oldfiles',
+    buffers = 'buffers',
+    grep_curbuf = 'lgrep_curbuf',
+    definitions = 'lsp_definitions',
+    references = 'lsp_references',
+    implementations = 'lsp_implementations',
+    typedefs = 'lsp_typedefs',
+    document_symbols = 'lsp_document_symbols',
+    workspace_symbols = 'lsp_workspace_symbols',
+  },
+  telescope = {
+    module = 'telescope.builtin',
+    help = 'help_tags',
+    keymaps = 'keymaps',
+    files = 'find_files',
+    builtin = 'builtin',
+    grep_word = 'grep_string',
+    live_grep = 'live_grep',
+    diagnostics = 'diagnostics',
+    resume = 'resume',
+    oldfiles = 'oldfiles',
+    buffers = 'buffers',
+    grep_curbuf = 'current_buffer_fuzzy_find',
+    definitions = 'lsp_definitions',
+    references = 'lsp_references',
+    implementations = 'lsp_implementations',
+    typedefs = 'lsp_type_definitions',
+    document_symbols = 'lsp_document_symbols',
+    workspace_symbols = 'lsp_dynamic_workspace_symbols',
+  },
+}
 
-  vim.keymap.set('n', 'gd', require('telescope.builtin').lsp_definitions, { desc = '[G]oto [D]efinition' })
-  vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, { desc = '[G]oto [R]eferences' })
-  vim.keymap.set('n', 'gI', require('telescope.builtin').lsp_implementations, { desc = '[G]oto [I]mplementation' })
-  vim.keymap.set('n', '<leader>D', require('telescope.builtin').lsp_type_definitions, { desc = 'Type [D]efinition' })
-  vim.keymap.set('n', '<leader>ds', require('telescope.builtin').lsp_document_symbols, { desc = '[D]ocument [S]ymbols' })
-  vim.keymap.set('n', '<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, { desc = '[W]orkspace [S]ymbols' })
-
-  -- Slightly advanced example of overriding default behavior and theme
-  vim.keymap.set('n', '<leader>/', function()
-    -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-    require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-      winblend = 10,
-      previewer = false,
-    })
-  end, { desc = '[/] Fuzzily search in current buffer' })
-
-  -- It's also possible to pass additional configuration options.
-  --  See `:help telescope.require('telescope.builtin').live_grep()` for information about particular keys
-  vim.keymap.set('n', '<leader>s/', function()
-    require('telescope.builtin').live_grep {
-      grep_open_files = true,
-      prompt_title = 'Live Grep in Open Files',
-    }
-  end, { desc = '[S]earch [/] in Open Files' })
-
-  -- Shortcut for searching your Neovim configuration files
-  vim.keymap.set('n', '<leader>sn', function()
-    require('telescope.builtin').find_files { cwd = vim.fn.stdpath 'config' }
-  end, { desc = '[S]earch [N]eovim files' })
-elseif picker == 'fzf' then
-  vim.keymap.set('n', '<leader>sh', require('fzf-lua').helptags, { desc = '[S]earch [H]elp' })
-  vim.keymap.set('n', '<leader>sk', require('fzf-lua').keymaps, { desc = '[S]earch [K]eymaps' })
-  vim.keymap.set('n', '<leader>sf', require('fzf-lua').files, { desc = '[S]earch [F]iles' })
-  vim.keymap.set('n', '<leader>ss', require('fzf-lua').builtin, { desc = '[S]earch [S]elect Telescope' })
-  vim.keymap.set('n', '<leader>sw', require('fzf-lua').grep_cword, { desc = '[S]earch current [W]ord' })
-  vim.keymap.set('n', '<leader>sg', require('fzf-lua').live_grep, { desc = '[S]earch by [G]rep' })
-  vim.keymap.set('n', '<leader>sd', require('fzf-lua').diagnostics_workspace, { desc = '[S]earch [D]iagnostics' })
-  vim.keymap.set('n', '<leader>sr', require('fzf-lua').resume, { desc = '[S]earch [R]esume' })
-  vim.keymap.set('n', '<leader>s.', require('fzf-lua').oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-  vim.keymap.set('n', '<leader>sb', require('fzf-lua').buffers, { desc = '[F]ind existing [B]uffers' })
-  vim.keymap.set('n', '<leader><leader>', require('fzf-lua').files, { desc = '[ ] Find files' })
-
-  vim.keymap.set('n', '<leader>ff', require('fzf-lua').files, { desc = '[F]ind [F]iles' })
-  vim.keymap.set('n', '<leader>fg', require('fzf-lua').live_grep, { desc = '[F]ind with live [G]rep' })
-  vim.keymap.set('n', '<leader>fb', require('fzf-lua').buffers, { desc = '[F]ind in [B]uffers' })
-  vim.keymap.set('n', '<leader>fh', require('fzf-lua').helptags, { desc = '[F]ind in [H]elp tags' })
-  vim.keymap.set('n', '<leader>fc', require('fzf-lua').lgrep_curbuf, { desc = '[F]ind in [C]urrent buffer' })
-
-  vim.keymap.set('n', 'gd', require('fzf-lua').lsp_definitions, { desc = '[G]oto [D]efinition' })
-  vim.keymap.set('n', 'gr', require('fzf-lua').lsp_references, { desc = '[G]oto [R]eferences' })
-  vim.keymap.set('n', 'gI', require('fzf-lua').lsp_implementations, { desc = '[G]oto [I]mplementation' })
-  vim.keymap.set('n', '<leader>D', require('fzf-lua').lsp_typedefs, { desc = 'Type [D]efinition' })
-  vim.keymap.set('n', '<leader>ds', require('fzf-lua').lsp_document_symbols, { desc = '[D]ocument [S]ymbols' })
-  vim.keymap.set('n', '<leader>ws', require('fzf-lua').lsp_workspace_symbols, { desc = '[W]orkspace [S]ymbols' })
-elseif picker == 'snacks' then
-  vim.keymap.set('n', '<leader>sh', require('Snacks').picker.help(), { desc = '[S]earch [H]elp' })
-  -- vim.keymap.set('n', '<leader>sk', require('fzf-lua').keymaps, { desc = '[S]earch [K]eymaps' })
-  -- vim.keymap.set('n', '<leader>sf', require('fzf-lua').files, { desc = '[S]earch [F]iles' })
-  -- vim.keymap.set('n', '<leader>ss', require('fzf-lua').builtin, { desc = '[S]earch [S]elect Telescope' })
-  -- vim.keymap.set('n', '<leader>sw', require('fzf-lua').grep_cword, { desc = '[S]earch current [W]ord' })
-  -- vim.keymap.set('n', '<leader>sg', require('fzf-lua').live_grep, { desc = '[S]earch by [G]rep' })
-  -- vim.keymap.set('n', '<leader>sd', require('fzf-lua').diagnostics_workspace, { desc = '[S]earch [D]iagnostics' })
-  -- vim.keymap.set('n', '<leader>sr', require('fzf-lua').resume, { desc = '[S]earch [R]esume' })
-  -- vim.keymap.set('n', '<leader>s.', require('fzf-lua').oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-  -- vim.keymap.set('n', '<leader>sb', require('fzf-lua').buffers, { desc = '[F]ind existing [B]uffers' })
-  -- vim.keymap.set('n', '<leader><leader>', require('fzf-lua').files, { desc = '[ ] Find files' })
-  --
-  -- vim.keymap.set('n', '<leader>ff', require('fzf-lua').files, { desc = '[F]ind [F]iles' })
-  -- vim.keymap.set('n', '<leader>fg', require('fzf-lua').live_grep, { desc = '[F]ind with live [G]rep' })
-  -- vim.keymap.set('n', '<leader>fb', require('fzf-lua').buffers, { desc = '[F]ind in [B]uffers' })
-  -- vim.keymap.set('n', '<leader>fh', require('fzf-lua').helptags, { desc = '[F]ind in [H]elp tags' })
-  -- vim.keymap.set('n', '<leader>fc', require('fzf-lua').lgrep_curbuf, { desc = '[F]ind in [C]urrent buffer' })
-  --
-  -- vim.keymap.set('n', 'gd', require('fzf-lua').lsp_definitions, { desc = '[G]oto [D]efinition' })
-  -- vim.keymap.set('n', 'gr', require('fzf-lua').lsp_references, { desc = '[G]oto [R]eferences' })
-  -- vim.keymap.set('n', 'gI', require('fzf-lua').lsp_implementations, { desc = '[G]oto [I]mplementation' })
-  -- vim.keymap.set('n', '<leader>D', require('fzf-lua').lsp_typedefs, { desc = 'Type [D]efinition' })
-  -- vim.keymap.set('n', '<leader>ds', require('fzf-lua').lsp_document_symbols, { desc = '[D]ocument [S]ymbols' })
-  -- vim.keymap.set('n', '<leader>ws', require('fzf-lua').lsp_workspace_symbols, { desc = '[W]orkspace [S]ymbols' })
+local p = pickers[vim.g.picker]
+if not p then
+  return
 end
+
+local function pick(action)
+  return function()
+    require(p.module)[p[action]]()
+  end
+end
+
+local map = function(lhs, action, desc)
+  vim.keymap.set('n', lhs, pick(action), { desc = desc })
+end
+
+map('<leader>sh', 'help', '[S]earch [H]elp')
+map('<leader>sk', 'keymaps', '[S]earch [K]eymaps')
+map('<leader>sf', 'files', '[S]earch [F]iles')
+map('<leader>ss', 'builtin', '[S]earch [S]elect picker')
+map('<leader>sw', 'grep_word', '[S]earch current [W]ord')
+map('<leader>sg', 'live_grep', '[S]earch by [G]rep')
+map('<leader>sd', 'diagnostics', '[S]earch [D]iagnostics')
+map('<leader>sr', 'resume', '[S]earch [R]esume')
+map('<leader>s.', 'oldfiles', '[S]earch Recent Files ("." for repeat)')
+map('<leader>sb', 'buffers', '[F]ind existing [B]uffers')
+map('<leader><leader>', 'files', '[ ] Find files')
+
+map('<leader>ff', 'files', '[F]ind [F]iles')
+map('<leader>fg', 'live_grep', '[F]ind with live [G]rep')
+map('<leader>fb', 'buffers', '[F]ind in [B]uffers')
+map('<leader>fh', 'help', '[F]ind in [H]elp tags')
+map('<leader>fc', 'grep_curbuf', '[F]ind in [C]urrent buffer')
+
+map('gd', 'definitions', '[G]oto [D]efinition')
+map('grr', 'references', '[G]oto [R]eferences')
+map('gI', 'implementations', '[G]oto [I]mplementation')
+map('<leader>D', 'typedefs', 'Type [D]efinition')
+map('<leader>ds', 'document_symbols', '[D]ocument [S]ymbols')
+map('<leader>ws', 'workspace_symbols', '[W]orkspace [S]ymbols')

@@ -13,8 +13,7 @@ vim.diagnostic.config { virtual_text = false }
 require('lazy').setup {
   spec = {
     { 'tpope/vim-sleuth' },
-    { 'numToStr/Comment.nvim', opts = {} },
-    { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+    { 'folke/todo-comments.nvim', event = { 'BufReadPost', 'BufNewFile' }, dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
     { import = 'plugins' },
     { import = 'plugins.debug' },
     { import = 'plugins.practice' },

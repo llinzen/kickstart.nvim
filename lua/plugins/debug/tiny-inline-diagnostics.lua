@@ -94,8 +94,6 @@ end
 
 return {
   'rachartier/tiny-inline-diagnostic.nvim',
-  event = 'LspAttach', -- Or `LspAttach`
-  lazy = false,
-  priority = 10000, -- needs to be loaded in first
+  event = 'VeryLazy', -- right after startup (also covers linter diagnostics without LSP)
   config = config,
 }
