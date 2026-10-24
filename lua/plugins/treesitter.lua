@@ -16,7 +16,11 @@ return {
     lazy = false, -- does not support lazy-loading
     build = ':TSUpdate',
     config = function()
-      require('nvim-treesitter').install(ensure_installed)
+      -- building parsers needs the tree-sitter CLI; machines without it (ep1, the Pis) get the
+      -- parsers compiled elsewhere (`dotsync tools`) and should not retry at every start
+      if vim.fn.executable 'tree-sitter' == 1 then
+        require('nvim-treesitter').install(ensure_installed)
+      end
 
       local function start(buf, lang, ft)
         if not pcall(vim.treesitter.start, buf, lang) then
