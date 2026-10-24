@@ -18,6 +18,7 @@ return {
     config = function()
       -- building parsers needs the tree-sitter CLI; machines without it (ep1, the Pis) get the
       -- parsers compiled elsewhere (`dotsync tools`) and should not retry at every start
+      vim.g.ts_ensure_installed = ensure_installed   -- for scripted installs (ansible role, dotsync)
       if vim.fn.executable 'tree-sitter' == 1 then
         require('nvim-treesitter').install(ensure_installed)
       end
