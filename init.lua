@@ -19,6 +19,7 @@ require 'config.lazy'
 require 'config.spellings'
 require 'config.filetypes'
 require 'keymaps.init'
+require 'config.cmd-hint'
 
 vim.o.background = 'dark' -- or "light" for light mode
 vim.cmd [[colorscheme gruvbox]]

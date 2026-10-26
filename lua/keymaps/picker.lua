@@ -6,6 +6,7 @@ local pickers = {
     module = 'fzf-lua',
     help = 'helptags',
     keymaps = 'keymaps',
+    commands = 'commands',
     files = 'files',
     builtin = 'builtin',
     grep_word = 'grep_cword',
@@ -25,6 +26,7 @@ local pickers = {
   telescope = {
     module = 'telescope.builtin',
     help = 'help_tags',
+    commands = 'commands',
     keymaps = 'keymaps',
     files = 'find_files',
     builtin = 'builtin',
@@ -61,6 +63,7 @@ end
 
 map('<leader>sh', 'help', '[S]earch [H]elp')
 map('<leader>sk', 'keymaps', '[S]earch [K]eymaps')
+map('<leader>s:', 'commands', '[S]earch : commands')
 map('<leader>sf', 'files', '[S]earch [F]iles')
 map('<leader>ss', 'builtin', '[S]earch [S]elect picker')
 map('<leader>sw', 'grep_word', '[S]earch current [W]ord')

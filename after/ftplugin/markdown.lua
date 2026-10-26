@@ -4,6 +4,16 @@
 -- Inside the vault obsidian.nvim keeps its own <CR> (smart action).
 local buf = vim.api.nvim_get_current_buf()
 local file = vim.api.nvim_buf_get_name(buf)
+
+-- <leader>mq: quiet reading, i.e. spell checking and diagnostics (markdownlint inline hints) off/on for this buffer
+vim.keymap.set('n', '<leader>mq', function()
+  local quiet = not vim.b.md_quiet
+  vim.b.md_quiet = quiet
+  vim.opt_local.spell = not quiet
+  vim.diagnostic.enable(not quiet, { bufnr = 0 })
+  vim.notify(quiet and 'markdown: spell + diagnostics off' or 'markdown: spell + diagnostics on')
+end, { buffer = buf, desc = '[M]arkdown [Q]uiet: spell + diagnostics toggle' })
+
 local vault = vim.fn.expand '~' .. '/obsidian-sync/'
 if file:sub(1, #vault) == vault then
   return
