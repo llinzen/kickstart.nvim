@@ -6,10 +6,10 @@ return {
     opts = {
       -- keep the cursor line rendered too while reading (default: it shows the raw markdown)
       anti_conceal = { enabled = false },
-      -- no extra virtual lines above/below code blocks and no inline padding in tables: they shift what you see
-      -- against the real text, so scrolling jumps and mouse clicks land in the wrong place
+      -- no extra virtual lines above/below code blocks: they shift what you see against the real text, so scrolling
+      -- jumps. Tables keep the default 'padded' cells (aligned columns); the padding is inline virtual text, so a
+      -- click inside a table can land a few columns off ('raw' would fix clicks but not align the columns).
       code = { border = 'thin' },
-      pipe_table = { cell = 'overlay' },
       checkbox = { right_pad = 0 },
     },
     keys = {
