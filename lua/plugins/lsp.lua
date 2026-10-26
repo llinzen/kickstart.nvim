@@ -67,6 +67,14 @@ return {
           -- elsewhere in your config, without redefining it, due to `opts_extend`
           sources = {
             default = { 'lsp', 'path', 'snippets', 'buffer' },
+            providers = {
+              -- : completion shows the keymap of a command next to it (lua/config/cmd-hint.lua)
+              cmdline = {
+                transform_items = function(ctx, items)
+                  return require('config.cmd-hint').annotate(ctx, items)
+                end,
+              },
+            },
           },
           -- function signature help
           signature = { enabled = true },
